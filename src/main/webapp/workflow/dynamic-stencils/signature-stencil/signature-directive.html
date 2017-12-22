@@ -1,0 +1,8 @@
+<div ng-controller="signatureController" id="signatureContainer">
+	<div style="float: left">
+		<canvas></canvas>
+	</div>
+	<div style="float: left" ng-show="!(field.type === 'readonly')">
+		<button ng-click="clear()">Clear</button>
+	</div>
+</div>

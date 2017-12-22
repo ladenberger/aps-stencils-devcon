@@ -1,0 +1,307 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ladenberger</groupId>
+	<artifactId>aps-stencils-devcon</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>APS Stencils Demo 4 DevCon</name>
+	<packaging>${packaging.type}</packaging>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.3.RELEASE</version>
+	</parent>
+
+	<properties>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<!-- Base directory for all RDBMS data and Content data -->
+		<activiti.datadir>${project.basedir}/activiti_data_dev</activiti.datadir>
+
+		<!-- The version of the Alfresco Activiti Enterprise Workflow Engine that 
+			the customization will run in -->
+		<activiti.version>1.7.0</activiti.version>
+
+		<aps.maven.plugin.version>0.0.1-SNAPSHOT</aps.maven.plugin.version>
+
+	</properties>
+
+	<profiles>
+
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<packaging.type>war</packaging.type>
+			</properties>
+			<dependencies>
+
+				<dependency>
+					<groupId>com.activiti</groupId>
+					<artifactId>activiti-app</artifactId>
+					<version>${activiti.version}</version>
+					<type>war</type>
+				</dependency>
+
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
+				</dependency>
+
+			</dependencies>
+
+			<build>
+
+				<plugins>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<ignoreWebxml>true</ignoreWebxml>
+							<failOnMissingWebXml>false</failOnMissingWebXml>
+							<overlays>
+								<overlay>
+									<groupId>com.activiti</groupId>
+									<artifactId>activiti-app</artifactId>
+									<excludes>
+										<!-- Exclude the web resources that are overridden by this module -->
+										<exclude>scripts/app-cfg.js</exclude>
+									</excludes>
+								</overlay>
+							</overlays>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<!-- Plugin to start the module via Maven (see also https://confluence.creditplus.int/confluence/display/AUSZ/Howto) -->
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<server>localhost</server>
+							<port>8080</port>
+							<path>/activiti-app</path>
+							<uriEncoding>utf-8</uriEncoding>
+						</configuration>
+					</plugin>
+
+				</plugins>
+
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<filtering>true</filtering>
+					</resource>
+					<!-- Include dev resources to classpath -->
+					<resource>
+						<directory>src/main/dev</directory>
+						<filtering>true</filtering>
+					</resource>
+				</resources>
+
+				<finalName>activiti-app</finalName>
+
+			</build>
+
+		</profile>
+
+		<profile>
+			<!-- The jar profile is used to create the actual jar file with the module's 
+				resources (backend and frontend) -->
+			<id>jar</id>
+			<properties>
+				<packaging.type>jar</packaging.type>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<excludes>
+							<exclude>rebel.xml</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+
+	</profiles>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<!-- This plugin ensures that the App definition ZIP is also uploaded 
+					to the Artifactory -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>target/aps-app/AlfrescoDevConStencils.zip</file>
+									<type>zip</type>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Disable the strict checking -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.ladenberger</groupId>
+				<artifactId>aps-maven-plugin</artifactId>
+				<version>${aps.maven.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>prepare-stencils</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>stencil-templates</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>compile-stencils</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>stencil-json</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<stencilsName>AlfrescoDevConStencils</stencilsName>
+					<stencils>
+						<stencil>
+							<name>notes</name>
+						</stencil>
+						<stencil>
+							<name>signature</name>
+							<scripts>
+								<script>
+									<name>signature_pad.js</name>
+								</script>
+							</scripts>
+						</stencil>
+					</stencils>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.ladenberger</groupId>
+										<artifactId>aps-maven-plugin</artifactId>
+										<versionRange>[0.0.1-SNAPSHOT,)</versionRange>
+										<goals>
+											<goal>stencil-templates</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute>
+											<runOnIncremental>true</runOnIncremental>
+										</execute>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.activiti</groupId>
+			<artifactId>activiti-app-logic</artifactId>
+			<version>${activiti.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<!-- Alfresco Maven Repositories -->
+	<repositories>
+		<!-- Activiti BPM -->
+		<repository>
+			<id>activiti-public</id>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+		</repository>
+		<repository>
+			<id>activiti-public-snapshots</id>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/public-snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</repository>
+		<!-- Activiti Enterprise Edition Artifacts, put username/pwd for server 
+			in settings.xml -->
+		<repository>
+			<id>activiti-private-repository</id>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-enterprise-releases</url>
+		</repository>
+	</repositories>
+
+</project>

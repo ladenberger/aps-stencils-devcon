@@ -1,0 +1,26 @@
+<div ng-controller="notesController">
+	<div id="notesContainer">
+
+		<div class="input-group" style="width: 100%"
+			ng-show="!(field.type === 'readonly')" id="notesInput">
+			<textarea class="form-control" rows="3" style="resize: none;"
+				ng-model="currentNote" placeholder="Notiz hinzuf&uuml;gen..."></textarea>
+			<span class="input-group-addon btn btn-primary" ng-click="addNote()">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+			</span>
+		</div>
+
+		<div class="list-group">
+
+			<div ng-repeat="note in field.value | reverse track by $index"
+				class="list-group-item list-group-item-action flex-column align-items-start active">
+				<div class="d-flex w-100 justify-content-between">
+					<small>{{note.fullName}} - {{note.date}}</small>
+				</div>
+				<p class="mb-1">{{note.content}}</p>
+			</div>
+
+		</div>
+
+	</div>
+</div>
