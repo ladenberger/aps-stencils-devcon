@@ -194,11 +194,12 @@
 						<id>compile-stencils</id>
 						<phase>prepare-package</phase>
 						<goals>
-							<goal>stencil-json</goal>
+							<goal>app-zip</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
+					<goalPrefix>aps</goalPrefix>
 					<stencilsName>AlfrescoDevConStencils</stencilsName>
 					<stencils>
 						<stencil>

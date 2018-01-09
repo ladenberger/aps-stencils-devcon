@@ -6,7 +6,7 @@ angular.module('activitiApp').run(['$templateCache', function($templateCache) {
 	"		<div class=\"input-group\" style=\"width: 100%\"\n" +
 	"			ng-show=\"!(field.type === 'readonly')\" id=\"notesInput\">\n" +
 	"			<textarea class=\"form-control\" rows=\"3\" style=\"resize: none;\"\n" +
-	"				ng-model=\"currentNote\" placeholder=\"Notiz hinzuf&uuml;gen...\"></textarea>\n" +
+	"				ng-model=\"currentNote\" placeholder=\"Write some note ...\"></textarea>\n" +
 	"			<span class=\"input-group-addon btn btn-primary\" ng-click=\"addNote()\">\n" +
 	"				<span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>\n" +
 	"			</span>\n" +
