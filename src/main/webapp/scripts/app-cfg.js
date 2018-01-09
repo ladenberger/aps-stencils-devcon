@@ -41,12 +41,6 @@ angular.forEach(customStencils, function(stencil) {
 		'src' : ACTIVITI.CONFIG.webContextRoot + '/workflow/dynamic-stencils/'
 				+ stencil + '-stencil/' + stencil + '-ctrl.js?v=1.0'
 	});
-	ACTIVITI.CONFIG.resources['workflow'].push({
-		'tag' : 'link',
-		'rel' : 'stylesheet',
-		'href' : ACTIVITI.CONFIG.webContextRoot + '/workflow/dynamic-stencils/'
-				+ stencil + '-stencil/' + stencil + '-style.css?v=1.0'
-	});
 });
 ACTIVITI.CONFIG.resources['workflow'].push({
 	'tag' : 'script',
