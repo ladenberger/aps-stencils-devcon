@@ -203,10 +203,12 @@
 					<stencilsName>AlfrescoDevConStencils</stencilsName>
 					<fields>
 						<field>
-							<name>notes</name>
+							<customType>notes</customType>
+							<title>Custom Notes Form Field</title>
 						</field>
 						<field>
-							<name>signature</name>
+							<customType>signature</customType>
+							<title>Custom Signature Form Field</title>
 							<scripts>
 								<script>
 									<name>signature_pad.js</name>
