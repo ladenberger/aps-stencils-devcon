@@ -33,18 +33,18 @@ ACTIVITI.CONFIG.resources = {
 			} ]
 };
 
-var customStencils = ['notes','signature']
-angular.forEach(customStencils, function(stencil) {
+var customFields = ['notes','signature']
+angular.forEach(customFields, function(field) {
 	ACTIVITI.CONFIG.resources['workflow'].push({
 		'tag' : 'script',
 		'type' : 'text/javascript',
 		'src' : ACTIVITI.CONFIG.webContextRoot + '/workflow/dynamic-stencils/'
-				+ stencil + '-stencil/' + stencil + '-ctrl.js?v=1.0'
+				+ field + '-field/' + field + '-ctrl.js?v=1.0'
 	});
 });
 ACTIVITI.CONFIG.resources['workflow'].push({
 	'tag' : 'script',
 	'type' : 'text/javascript',
 	'src' : ACTIVITI.CONFIG.webContextRoot + '/workflow/dynamic-stencils/'
-		+ 'signature-stencil/scripts/signature_pad.js?v=1.0'
+		+ 'signature-field/scripts/signature_pad.js?v=1.0'
 });

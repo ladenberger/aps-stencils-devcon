@@ -201,19 +201,19 @@
 				<configuration>
 					<goalPrefix>aps</goalPrefix>
 					<stencilsName>AlfrescoDevConStencils</stencilsName>
-					<stencils>
-						<stencil>
+					<fields>
+						<field>
 							<name>notes</name>
-						</stencil>
-						<stencil>
+						</field>
+						<field>
 							<name>signature</name>
 							<scripts>
 								<script>
 									<name>signature_pad.js</name>
 								</script>
 							</scripts>
-						</stencil>
-					</stencils>
+						</field>
+					</fields>
 				</configuration>
 			</plugin>
 
